@@ -1,0 +1,4 @@
+tcod >= 16.2.2
+numpy >= 1.26.4
+auto-py-to-exe >= 2.42.0
+pyinstaller >= 6.5.0
