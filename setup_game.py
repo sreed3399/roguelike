@@ -19,6 +19,7 @@ import input_handlers
 
 # Load the background image and remove the alpha channel.
 background_image = tcod.image.load("menu_background.png")[:, :, :3]
+test_image = tcod.image.load("test.png")[:, :, :3]
 kb = tcod.event.KeySym
 
 def new_game() -> Engine:
@@ -29,9 +30,6 @@ def new_game() -> Engine:
     room_max_size = 10
     room_min_size = 6
     max_rooms = 30
-
-    max_monsters_per_room = 2
-    max_items_per_room = 2
 
     player = copy.deepcopy(entity_factories.player)
 
@@ -44,8 +42,6 @@ def new_game() -> Engine:
         room_max_size=room_max_size,
         map_width=map_width,
         map_height=map_height,
-        max_monsters_per_room=max_monsters_per_room,
-        max_items_per_room=max_items_per_room,
     )
     #entity_factories.fireball_scroll.spawn(engine.game_map,player.x,player.y)
 
@@ -71,6 +67,7 @@ class MainMenu(input_handlers.BaseEventHandler):
     def on_render(self, console: tcod.Console) -> None:
         """Render the main menu on a background image."""
         console.draw_semigraphics(background_image, 0, 0)
+        #console.draw_semigraphics(test_image, 0, 0)
 
         console.print(
             console.width // 2,

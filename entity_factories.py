@@ -10,6 +10,7 @@ from entity import Actor, Item
 player = Actor(
     char="@",
     color=(255, 255, 255),
+    #color=(255, 0, 0),
     name="Player",
     ai_cls=HostileEnemy,
     fighter=Fighter(hp=30, defense=2, power=5),
