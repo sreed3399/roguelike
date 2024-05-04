@@ -3,3 +3,4 @@ __pycache__/
 Include/*
 Scripts/*
 *.sav
+pyvenv.cfg
