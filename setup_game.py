@@ -19,8 +19,9 @@ import input_handlers
 
 
 # Load the background image and remove the alpha channel.
-background_image = tcod.image.load("menu_background.png")[:, :, :3]
-test_image = tcod.image.load("test.png")[:, :, :3]
+#background_image = tcod.image.load("menu_background.png")[:, :, :3]
+background_image = tcod.image.load("images/mario.png")[:, :, :3]
+#test_image = tcod.image.load("test.png")[:, :, :3]
 kb = tcod.event.KeySym
 
 def new_game() -> Engine:
@@ -34,6 +35,7 @@ def new_game() -> Engine:
 
     player = copy.deepcopy(entity_factories.player)
 
+    player.speed = 200
     engine = Engine(player=player)
 
     engine.game_world = GameWorld(

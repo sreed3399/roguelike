@@ -30,9 +30,11 @@ class Engine:
 
     def handle_enemy_turns(self) -> None:
         for entity in set(self.game_map.actors) - {self.player}:
+            
             if entity.ai:
                 try:
-                    entity.ai.perform()
+                    if entity.energy >=0:
+                        entity.ai.perform()
                 except exceptions.Impossible:
                     pass  # Ignore impossible action exceptions from AI.
 
@@ -73,8 +75,6 @@ class Engine:
             needed_xp=self.player.level.experience_to_next_level,
             location=(0,48),
         )
-
-            
 
         render_functions.render_names_at_mouse_location(console=console, x=21, y=44, engine=self)
 

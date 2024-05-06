@@ -2,6 +2,15 @@ white = (0xFF, 0xFF, 0xFF)
 black = (0x0, 0x0, 0x0)
 red = (0xFF, 0x0, 0x0)
 
+yellow = (248,252,80)
+orange =(168,84,0)
+green =(0,158,0)
+blue =(0,158,158)
+dark_red =(157,0,0)
+med_grey = (168,168,168)
+
+
+
 player_atk = (0xE0, 0xE0, 0xE0)
 enemy_atk = (0xFF, 0xC0, 0xC0)
 needs_target = (0x3F, 0xFF, 0xFF)
@@ -27,6 +36,8 @@ menu_text = white
 
 stone_fg_dark = (50,50,50)
 stone_fg_light = (150,150,150)
+stone_bg_dark = (1,1,1)
+stone_bg_light = (5,5,5)
 
 brown_dark = (160,82,45)
 

@@ -2,3 +2,6 @@ tcod >= 16.2.2
 numpy >= 1.26.4
 auto-py-to-exe >= 2.42.0
 pyinstaller >= 6.5.0
+pillow >= 10.3.0
+imageio >= 2.34
+pygame >= 2.5.2

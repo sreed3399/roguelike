@@ -19,6 +19,7 @@ max_items_by_floor = [
    (4, 2),
 ]
 
+#Per Room
 max_monsters_by_floor = [
    (1, 2),
    (4, 3),
@@ -190,13 +191,21 @@ def generate_dungeon(
 
         # Finally, append the new room to the list.
         rooms.append(new_room)
+    
+    instances = 0
+    for entity in set(dungeon.gamemap.actors) - {player}:
+        instances += 1
+        entity.name += str(instances)
+        #print(entity.name)
 
     return dungeon
 
 def place_entities(room: RectangularRoom, dungeon: GameMap, floor_number: int,) -> None:
+    
     number_of_monsters = random.randint(
         0, get_max_value_for_floor(max_monsters_by_floor, floor_number)
     )
+
     number_of_items = random.randint(
         0, get_max_value_for_floor(max_items_by_floor, floor_number)
     )
@@ -208,13 +217,16 @@ def place_entities(room: RectangularRoom, dungeon: GameMap, floor_number: int,) 
         item_chances, number_of_items, floor_number
     )
 
-
+    
     for entity in monsters + items:
+        
         x = random.randint(room.x1 + 1, room.x2 - 1)
         y = random.randint(room.y1 + 1, room.y2 - 1)
 
         if not any(entity.x == x and entity.y == y for entity in dungeon.entities):
-            entity.spawn(dungeon, x, y)
+            new = entity.spawn(dungeon, x, y)
+
+    
 
 
 def tunnel_between(

@@ -6,10 +6,17 @@ from components.inventory import Inventory
 from components.level import Level
 from entity import Actor, Item
 
+import random
+
+koopa_chr = chr(100000)
+goomba_chr = chr(100001)
+player_chr = chr(100003)
+yoshi_chr = chr(100003)
+
 
 
 player = Actor(
-    char="@",
+    char=player_chr,
     color=(255, 255, 255),
     #color=(255, 0, 0),
     name="Player",
@@ -21,9 +28,10 @@ player = Actor(
 )
 
 orc = Actor(
-    char="o",
-    color=(63, 127, 63),
-    name="Orc",
+    #char="𘚠" ,
+    char=goomba_chr ,
+    #color=(63, 127, 63),
+    name= "Goomba",
     ai_cls=HostileEnemy,
     equipment=Equipment(),
     fighter=Fighter(hp=10, base_defense=0, base_power=3),
@@ -73,7 +81,9 @@ dagger = Item(
     char="/", color=(0, 191, 255), name="Dagger", equippable=equippable.Dagger()
 )
 
-sword = Item(char="/", color=(0, 191, 255), name="Sword", equippable=equippable.Sword())
+sword = Item(
+    char="/", color=(0, 191, 255), name="Sword", equippable=equippable.Sword()
+    )
 
 leather_armor = Item(
     char="[",

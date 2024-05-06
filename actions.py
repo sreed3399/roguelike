@@ -5,6 +5,7 @@ from typing import Optional, Tuple, TYPE_CHECKING
 
 import color
 import exceptions
+from pygame import mixer
 
 if TYPE_CHECKING:
     from engine import Engine
@@ -16,6 +17,18 @@ class Action:
     def __init__(self, entity: Actor) -> None:
         super().__init__()
         self.entity = entity
+
+    @property
+    def energy(self) -> int:
+        return self.entity.energy
+
+    @property
+    def name(self) -> int:
+        return self.entity.name
+
+    @property
+    def speed(self) -> int:
+        return self.entity.speed
 
     @property
     def engine(self) -> Engine:
@@ -55,6 +68,7 @@ class PickupAction(Action):
                 inventory.items.append(item)
 
                 self.engine.message_log.add_message(f"You picked up the {item.name}!")
+                self.entity.energy -= 500
                 return
 
         raise exceptions.Impossible("There is nothing here to pick up.")
@@ -78,6 +92,7 @@ class ItemAction(Action):
         """Invoke the items ability, this action will be given to provide context."""
         if self.item.consumable:
             self.item.consumable.activate(self)
+            self.entity.energy -= 1000
 
 
 
@@ -91,6 +106,7 @@ class DropItem(ItemAction):
             self.entity.equipment.toggle_equip(self.item)
             
         self.entity.inventory.drop(self.item)
+        self.entity.energy -= 500
 
 class EquipAction(Action):
     def __init__(self, entity: Actor, item: Item):
@@ -100,9 +116,11 @@ class EquipAction(Action):
 
     def perform(self) -> None:
         self.entity.equipment.toggle_equip(self.item)
+        self.entity.energy -= 1000
 
 class WaitAction(Action):
     def perform(self) -> None:
+        self.entity.energy -= 1000
         pass
 
 
@@ -154,6 +172,12 @@ class BumpAction(ActionWithDirection):
 
 class MeleeAction(ActionWithDirection):
     def perform(self) -> None:
+        
+        #mixer.init()
+        hit = mixer.Sound("sounds/sword-hit.wav")
+        hit.set_volume(0.25)
+        hit.play()
+
         target = self.target_actor
         
         if not target:
@@ -180,10 +204,14 @@ class MeleeAction(ActionWithDirection):
                 f"{attack_desc} but does no damage.", attack_color
             )
 
+        self.entity.energy -= 1000
+
 
 class MovementAction(ActionWithDirection):
 
     def perform(self) -> None:
+        
+               
         dest_x, dest_y = self.dest_xy
 
         if not self.engine.game_map.in_bounds(dest_x, dest_y):
@@ -197,4 +225,7 @@ class MovementAction(ActionWithDirection):
             raise exceptions.Impossible("That way is blocked.")       
 
         self.entity.move(self.dx, self.dy)
+        self.entity.energy -= 1000
+        #print(self.entity.name, self.entity.energy,self.entity.fighter.energy)
+        #print(self.name,self.energy)
 

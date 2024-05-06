@@ -41,6 +41,8 @@ class Entity:
         self.name = name
         self.blocks_movement = blocks_movement
         self.render_order = render_order
+        self.entityid = name
+        
         if parent:
             # If parent isn't provided now then it will be set later.
             self.parent = parent
@@ -95,6 +97,7 @@ class Actor(Entity):
         fighter: Fighter,
         inventory: Inventory,
         level: Level,
+        
     ):
         super().__init__(
             x=x,
@@ -119,10 +122,15 @@ class Actor(Entity):
         self.level = level
         self.level.parent = self
 
+        self.speed = 100
+        self.energy = 0
+         
+
     @property
     def is_alive(self) -> bool:
         """Returns True as long as this actor can perform actions."""
         return bool(self.ai)
+
 
 
 class Item(Entity):

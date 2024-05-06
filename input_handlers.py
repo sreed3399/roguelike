@@ -124,33 +124,36 @@ class EventHandler(BaseEventHandler):
         self.engine = engine
 
     def handle_events(self, event: tcod.event.Event) -> BaseEventHandler:
-            """Handle events for input handlers with an engine."""
-            action_or_state = self.dispatch(event)
-            if isinstance(action_or_state, BaseEventHandler):
-                return action_or_state
-            if self.handle_action(action_or_state):
-                # A valid action was performed.
-                if not self.engine.player.is_alive:
-                    # The player was killed sometime during or after the action.
-                    return GameOverEventHandler(self.engine)
-                elif self.engine.player.level.requires_level_up:
-                    return LevelUpEventHandler(self.engine)
-                return MainGameEventHandler(self.engine)  # Return to the main handler.
-            return self
+        #print("handle events")            
+        """Handle events for input handlers with an engine."""
+        action_or_state = self.dispatch(event)
+        if isinstance(action_or_state, BaseEventHandler):
+            return action_or_state
+        if self.handle_action(action_or_state):
+            # A valid action was performed.
+            if not self.engine.player.is_alive:
+                # The player was killed sometime during or after the action.
+                return GameOverEventHandler(self.engine)
+            elif self.engine.player.level.requires_level_up:
+                return LevelUpEventHandler(self.engine)
+            return MainGameEventHandler(self.engine)  # Return to the main handler.
+        return self
 
     def handle_action(self, action: Optional[Action]) -> bool:
         """Handle actions returned from event methods.
 
         Returns True if the action will advance a turn.
         """
+        #print("handle actions")    
+
         if action is None:
             return False
-
         try:
             action.perform()
         except exceptions.Impossible as exc:
             self.engine.message_log.add_message(exc.args[0], color.impossible)
             return False  # Skip enemy turn on exceptions.
+
 
         self.engine.handle_enemy_turns()
 
@@ -225,11 +228,7 @@ class GameOverEventHandler(EventHandler):
             #raise SystemExit()
             self.on_quit()   
 
-class SlowAnimation(EventHandler):
-    
-    def ev_keydown(self, event: tcod.event.KeyDown) -> None:
-        if event.sym == kb.ESCAPE:
-            raise SystemExit()  
+
 
 
 
@@ -328,19 +327,22 @@ class InventoryEventHandler(AskUserEventHandler):
         super().on_render(console)
         number_of_items_in_inventory = len(self.engine.player.inventory.items)
 
-        height = number_of_items_in_inventory + 2
+        # height = number_of_items_in_inventory + 2
 
-        if height <= 3:
-            height = 3
+        # if height <= 3:
+        #     height = 3
 
-        if self.engine.player.x <= 30:
-            x = 40
-        else:
-            x = 0
+        # if self.engine.player.x <= 30:
+        #     x = 40
+        # else:
+        #     x = 0
+        #
+        #width = len(self.TITLE) + 4
 
         y = 0
-
-        width = len(self.TITLE) + 4
+        x = 0
+        height = 50
+        width = 80
 
         console.draw_frame(
             x=x,
@@ -349,7 +351,7 @@ class InventoryEventHandler(AskUserEventHandler):
             height=height,
             title=self.TITLE,
             clear=True,
-            fg=(255, 255, 255),
+            fg=color.orange,
             bg=(0, 0, 0),
         )
 
@@ -405,7 +407,7 @@ class CharacterScreenEventHandler(AskUserEventHandler):
             x=x,
             y=y,
             width=width,
-            height=7,
+            height=12,
             title=self.TITLE,
             clear=True,
             fg=(255, 255, 255),
@@ -430,6 +432,14 @@ class CharacterScreenEventHandler(AskUserEventHandler):
         console.print(
             x=x + 1, y=y + 5, string=f"Defense: {self.engine.player.fighter.defense}"
         )
+
+        console.print(
+            x=x + 1, y=y + 6, string=f"Speed: {self.engine.player.speed}"
+        )
+        console.print(
+            x=x + 1, y=y + 7, string=f"Energy: {self.engine.player.energy}"
+        )
+
 
 
 class LevelUpEventHandler(AskUserEventHandler):

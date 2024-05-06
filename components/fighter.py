@@ -22,6 +22,14 @@ class Fighter(BaseComponent):
         self.base_power = base_power
 
     @property
+    def speed(self) -> int:
+        return self.parent.speed
+    
+    @property
+    def energy(self) -> int:
+        return self.parent.energy
+
+    @property
     def defense(self) -> int:
         return self.base_defense + self.defense_bonus
 
@@ -89,3 +97,5 @@ class Fighter(BaseComponent):
 
     def take_damage(self, amount: int) -> None:
         self.hp -= amount
+
+        
