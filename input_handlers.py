@@ -533,7 +533,7 @@ class InventoryActivateHandler(InventoryEventHandler):
             # Return the action for the selected item.
             return item.consumable.get_action(self.engine.player)
         elif item.equippable:
-            return actions.EquipAction(self.engine.player, item)
+            return EquipAction(self.engine.player, item)
         else:
             return None
 
@@ -545,7 +545,7 @@ class InventoryDropHandler(InventoryEventHandler):
 
     def on_item_selected(self, item: Item) -> Optional[ActionOrHandler]:
         """Drop this item."""
-        return actions.DropItem(self.engine.player, item)
+        return DropItem(self.engine.player, item)
     
 
 class SelectIndexHandler(AskUserEventHandler):
