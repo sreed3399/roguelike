@@ -9,7 +9,7 @@ import tcod.sdl.render
 import tcod.sdl.video
 
 CURRENT_DIR = Path(__file__).parent  # Directory of this script.
-font = ImageFont.truetype(bytes(CURRENT_DIR / "DejaVuSerif.ttf"), size=8)  # Preloaded font file.
+font = ImageFont.truetype(bytes(CURRENT_DIR / "tiles/DejaVuSerif.ttf"), size=18)  # Preloaded font file.
 
 
 def render_text(renderer: tcod.sdl.render.Renderer, text: str) -> tcod.sdl.render.Texture:

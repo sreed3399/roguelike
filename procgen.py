@@ -176,6 +176,7 @@ def generate_dungeon(
 
         if len(rooms) == 0:
             # The first room, where the player starts.
+            
             player.place(*new_room.center, dungeon)
         else:  # All rooms after the first.
             # Dig out a tunnel between this room and the previous one.
@@ -186,6 +187,7 @@ def generate_dungeon(
         place_entities(new_room, dungeon, engine.game_world.current_floor)
         #place_entities(new_room, dungeon, max_monsters_per_room, max_items_per_room)
 
+        dungeon.tiles[player.x,player.y] = tile_types.up_stairs
         dungeon.tiles[center_of_last_room] = tile_types.down_stairs
         dungeon.downstairs_location = center_of_last_room
 
@@ -195,9 +197,9 @@ def generate_dungeon(
     instances = 0
     for entity in set(dungeon.gamemap.actors) - {player}:
         instances += 1
-        entity.name += str(instances)
+        entity.id += str(instances)
         #print(entity.name)
-
+    
     return dungeon
 
 def place_entities(room: RectangularRoom, dungeon: GameMap, floor_number: int,) -> None:

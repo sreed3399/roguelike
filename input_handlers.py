@@ -7,7 +7,7 @@ import tcod.event
 
 from tcod import libtcodpy
 
-import actions
+
 from actions import *
 import color
 import exceptions
@@ -180,7 +180,7 @@ class MainGameEventHandler(EventHandler):
 
         if modifier & kb_mod.SHIFT: # if a shift is held
             if key == kb.PERIOD:
-                return actions.TakeStairsAction(player)
+                return TakeStairsAction(player)
 
         
         else: # No modifier keys
@@ -349,11 +349,18 @@ class InventoryEventHandler(AskUserEventHandler):
             y=y,
             width=width,
             height=height,
-            title=self.TITLE,
+            #title=self.TITLE,
             clear=True,
             fg=color.orange,
             bg=(0, 0, 0),
+            decoration="╔═╗║ ║╚═╝",
         )
+
+        txt = "║ Equipment ║"
+
+        centerTitle = int(width/2 - len(txt)/2)
+        
+        console.print(centerTitle , y , txt)
 
         if number_of_items_in_inventory > 0:
             for i, item in enumerate(self.engine.player.inventory.items):
@@ -437,8 +444,9 @@ class CharacterScreenEventHandler(AskUserEventHandler):
             x=x + 1, y=y + 6, string=f"Speed: {self.engine.player.speed}"
         )
         console.print(
-            x=x + 1, y=y + 7, string=f"Energy: {self.engine.player.energy}"
+            x=x + 1, y=y + 7, string=f"DV: {self.engine.player.dv}"
         )
+ 
 
 
 
@@ -458,10 +466,11 @@ class LevelUpEventHandler(AskUserEventHandler):
             y=0,
             width=35,
             height=8,
-            title=self.TITLE,
+            #title=self.TITLE,
             clear=True,
             fg=(255, 255, 255),
             bg=(0, 0, 0),
+            decoration="╔═╗║ ║╚═╝",
         )
 
         console.print(x=x + 1, y=1, string="Congratulations! You level up!")

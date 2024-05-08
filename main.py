@@ -33,14 +33,14 @@ def main() -> None:
 
     var = mixer.init()
     mixer.music.load("sounds/Mushroom Kingdom Mayhem.mp3")
-    mixer.music.play()
+    mixer.music.play(-1)
 
     tileset = tcod.tileset.load_tilesheet(
         #"dejavu10x10_gs_tc.png", 32, 8, tcod.tileset.CHARMAP_TCOD
         "tiles/tiles-2x.png", 32, 8, tcod.tileset.CHARMAP_TCOD
     )
 
-    tileset = tcod.tileset.load_truetype_font("tiles/courier.ttf",16,16)
+    tileset = tcod.tileset.load_truetype_font("tiles/courier-bold.ttf",16,16)
     
     image = Image.open("tiles/koopa.png")
     tileset.set_tile(100000,np.array(image))
@@ -60,8 +60,13 @@ def main() -> None:
     image = Image.open("tiles/down_pipe.png")
     tileset.set_tile(100011,np.array(image))
 
+    image = Image.open("tiles/up_pipe.png")
+    tileset.set_tile(100012,np.array(image))
+
     image = Image.open("tiles/dung_floor.png")
     tileset.set_tile(ord("."),np.array(image))
+
+ 
     
 
     handler: input_handlers.BaseEventHandler = setup_game.MainMenu()

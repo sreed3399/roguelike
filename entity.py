@@ -121,10 +121,30 @@ class Actor(Entity):
         self.inventory.parent = self
         self.level = level
         self.level.parent = self
+        self.id = name
 
+
+        self.heart = 10
+        self.power = 10
+        self.quickness = 10
+        self.smarts = 10
+        self.coolness = 10
+
+        self.visionRange = 8
         self.speed = 100
         self.energy = 0
-         
+
+        self.hpRegen = 100
+        self.fpRegen = 100
+
+        self.dv = 0
+        self.pv = 0
+
+                
+
+    @property
+    def toHit(self) -> int:
+        return (self.power-10)//2
 
     @property
     def is_alive(self) -> bool:

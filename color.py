@@ -39,6 +39,13 @@ stone_fg_light = (150,150,150)
 stone_bg_dark = (1,1,1)
 stone_bg_light = (5,5,5)
 
+green_fg_dark = (134,132,125)
+green_fg_light = (0,136,136) # (164,164,155)
+green_bg_dark = (34,132,125)
+green_bg_light = (64,164,155)
+
+green_brick = (0,136,136)
+
 brown_dark = (160,82,45)
 
 dun_wall_fg = (50, 50, 50)

@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 from typing import Optional, Tuple, TYPE_CHECKING
-
+import random
 
 import color
 import exceptions
 from pygame import mixer
+
+#import mapreader
 
 if TYPE_CHECKING:
     from engine import Engine
@@ -130,9 +132,12 @@ class TakeStairsAction(Action):
         Take the stairs, if any exist at the entity's location.
         """
         if (self.entity.x, self.entity.y) == self.engine.game_map.downstairs_location:
+            self.engine.game_map.save_map("levels/test.lvl")
+            
             self.engine.game_world.generate_floor()
             self.engine.message_log.add_message(
                 "You descend the staircase.", color.descend
+            
             )
         else:
             raise exceptions.Impossible("There are no stairs here.")
@@ -176,7 +181,9 @@ class MeleeAction(ActionWithDirection):
         #mixer.init()
         hit = mixer.Sound("sounds/sword-hit.wav")
         hit.set_volume(0.25)
-        hit.play()
+        miss = mixer.Sound("sounds/sword-miss.wav")
+        miss.set_volume(0.25)
+        
 
         target = self.target_actor
         
@@ -191,18 +198,26 @@ class MeleeAction(ActionWithDirection):
         else:
             attack_color = color.enemy_atk
 
-
-        if damage > 0:
-            print(f"{attack_desc} for {damage} hit points.")
-            self.engine.message_log.add_message(
-                f"{attack_desc} for {damage} hit points.", attack_color
-            )
-            target.fighter.hp -= damage
+        
+        if random.randint(1,20 + self.entity.toHit) >= target.dv:         
+            hit.play()
+            if damage > 0:
+                print(f"{attack_desc} for {damage} hit points.")
+                self.engine.message_log.add_message(
+                    f"{attack_desc} for {damage} hit points.", attack_color
+                )
+                target.fighter.hp -= damage
+            else:
+                print(f"{attack_desc} but does no damage.")
+                self.engine.message_log.add_message(
+                    f"{attack_desc} but does no damage.", attack_color
+                )
         else:
-            print(f"{attack_desc} but does no damage.")
+            print(f"{attack_desc} but misses!")
             self.engine.message_log.add_message(
-                f"{attack_desc} but does no damage.", attack_color
-            )
+                f"{attack_desc} but misses!", attack_color)
+            miss.play()
+
 
         self.entity.energy -= 1000
 

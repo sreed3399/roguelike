@@ -46,7 +46,7 @@ def new_game() -> Engine:
         map_width=map_width,
         map_height=map_height,
     )
-    #entity_factories.fireball_scroll.spawn(engine.game_map,player.x,player.y)
+    
 
     engine.game_world.generate_floor()
     engine.update_fov()
@@ -66,6 +66,7 @@ def new_game() -> Engine:
 
     player.inventory.items.append(leather_armor)
     player.equipment.toggle_equip(leather_armor, add_message=False)
+    player.dv = 20
 
 
 

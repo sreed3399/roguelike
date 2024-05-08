@@ -7,6 +7,7 @@ from tcod.console import Console
 
 from entity import Actor, Item
 import tile_types
+import pickle, lzma
 
 if TYPE_CHECKING:
     from engine import Engine
@@ -97,6 +98,15 @@ class GameMap:
                 console.print(
                     x=entity.x, y=entity.y, string=entity.char, fg=entity.color
                 )
+
+    def save_map(self, filename: str) -> None:
+        """Save this map instance as a compressed file."""
+        save_data = lzma.compress(pickle.dumps(self))
+        #save_data = self.tiles
+        #self.tiles.tofile("tiles.txt")
+        with open(filename, "wb") as f:
+            f.write(save_data)
+        
 
 class GameWorld:
     """
