@@ -20,7 +20,7 @@ import input_handlers
 
 # Load the background image and remove the alpha channel.
 #background_image = tcod.image.load("menu_background.png")[:, :, :3]
-background_image = tcod.image.load("images/mario.png")[:, :, :3]
+background_image = tcod.image.load("resources/images/mario.png")[:, :, :3]
 #test_image = tcod.image.load("test.png")[:, :, :3]
 kb = tcod.event.KeySym
 
@@ -91,7 +91,7 @@ class MainMenu(input_handlers.BaseEventHandler):
         console.print(
             console.width // 2,
             console.height // 2 - 4,
-            "TOMBS OF THE ANCIENT KINGS",
+            "Super Plumber Man: Quest of Unknown",
             fg=color.menu_title,
             alignment=libtcodpy.CENTER,
         )
@@ -105,7 +105,7 @@ class MainMenu(input_handlers.BaseEventHandler):
 
         menu_width = 24
         for i, text in enumerate(
-            ["[N] Play a new game", "[C] Continue last game", "[Q] Quit"]
+            ["[N] Play a new game", "[C] Continue last game","[Q] Quit"]
         ):
             console.print(
                 console.width // 2,

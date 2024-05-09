@@ -189,7 +189,9 @@ def generate_dungeon(
 
         dungeon.tiles[player.x,player.y] = tile_types.up_stairs
         dungeon.tiles[center_of_last_room] = tile_types.down_stairs
+
         dungeon.downstairs_location = center_of_last_room
+        dungeon.upstairs_location = (player.x,player.y)
 
         # Finally, append the new room to the list.
         rooms.append(new_room)
@@ -200,6 +202,8 @@ def generate_dungeon(
         entity.id += str(instances)
         #print(entity.name)
     
+    
+
     return dungeon
 
 def place_entities(room: RectangularRoom, dungeon: GameMap, floor_number: int,) -> None:

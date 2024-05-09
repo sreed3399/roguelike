@@ -126,13 +126,17 @@ class WaitAction(Action):
         pass
 
 
-class TakeStairsAction(Action):
+class TakeStairsDownAction(Action):
     def perform(self) -> None:
         """
         Take the stairs, if any exist at the entity's location.
         """
+        print(self.engine.game_map.downstairs_location)
+        print(self.entity.x, self.entity.y)
+
         if (self.entity.x, self.entity.y) == self.engine.game_map.downstairs_location:
             self.engine.game_map.save_map("levels/test.lvl")
+            
             
             self.engine.game_world.generate_floor()
             self.engine.message_log.add_message(
@@ -140,7 +144,32 @@ class TakeStairsAction(Action):
             
             )
         else:
-            raise exceptions.Impossible("There are no stairs here.")
+            raise exceptions.Impossible("There is no way down here.")
+
+class TakeStairsUpAction(Action):
+    def perform(self) -> None:
+        """
+        Take the stairs, if any exist at the entity's location.
+        """
+        print(self.engine.game_map.upstairs_location)
+        print(self.entity.x, self.entity.y)
+        if (self.entity.x, self.entity.y) == self.engine.game_map.upstairs_location:
+            self.engine.game_map.save_map("levels/test.lvl")
+            
+            
+            self.engine.game_world.generate_floor()
+            self.engine.message_log.add_message(
+                "You ascend the staircase.", color.descend
+            
+            )
+        else:
+            raise exceptions.Impossible("There is no way up here.")
+
+
+class SaveMapAction(Action):
+    def perform(self) -> None:
+        
+        self.engine.game_map.save_map("levels/test.lvl")
 
 
 class ActionWithDirection(Action):

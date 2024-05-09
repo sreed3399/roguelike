@@ -32,11 +32,14 @@ class GameMap:
         )  # Tiles the player has seen before
 
         self.downstairs_location = (0,0)
+        self.upstairs_location = (0,0)
+        self.floorName = "floor"
     
     @property
     def gamemap(self) -> GameMap:
         return self
 
+    
 
     @property
     def actors(self) -> Iterator[Actor]:
@@ -101,12 +104,20 @@ class GameMap:
 
     def save_map(self, filename: str) -> None:
         """Save this map instance as a compressed file."""
-        save_data = lzma.compress(pickle.dumps(self))
-        #save_data = self.tiles
-        #self.tiles.tofile("tiles.txt")
-        with open(filename, "wb") as f:
-            f.write(save_data)
+        #save_data = lzma.compress(pickle.dumps(self))
+        save_data = self.tiles#.copy(order='C')
+        save_data.tofile("levels/level" +  str(self.engine.game_world.current_floor) + ".lvl")
+  
         
+
+        #np.savetxt("levels/tiles.txt", save_data[[0,0],[0,1]], delimiter=";", fmt="%s",header="")
+        #with open(filename, "wb") as f:
+        #    f.write(save_data)
+
+        #b = np.loadtxt("levels/tiles.txt",dtype=str,delimiter=";")
+        #print("2-0,0: ",b[0,0])
+
+
 
 class GameWorld:
     """
@@ -150,3 +161,9 @@ class GameWorld:
             map_height=self.map_height,
             engine=self.engine,
         )
+
+    def move_floor(self, floor: str) -> None:
+        # If file exists, load
+        # If not generate.
+        # if 
+        return

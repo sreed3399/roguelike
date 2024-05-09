@@ -47,6 +47,7 @@ floor = new_tile(
     dark=(ord("."), stone_fg_dark, stone_bg_dark),
     light=(ord("."), stone_fg_light, stone_bg_light),
 )
+
 wall = new_tile(
     walkable=False,
     transparent=False,
@@ -69,3 +70,30 @@ up_stairs = new_tile(
     dark=(ord(up_chr), (200, 200, 200), (black)),
     light=(ord(up_chr), (255, 255, 255), (black)),
 )
+
+
+
+### Remove
+# down_stairs = new_tile(
+#     walkable=True,
+#     transparent=True,
+#     dark=(ord(">"), (200, 200, 200), (black)),
+#     light=(ord(">"), (255, 255, 255), (black)),
+# )
+
+# up_stairs = new_tile(
+#     walkable=True,
+#     transparent=True,
+#     dark=(ord("<"), (200, 200, 200), (black)),
+#     light=(ord("<"), (255, 255, 255), (black)),
+# )
+
+# wall = new_tile(
+#     walkable=False,
+#     transparent=False,
+#     dark=(ord("#"), green_fg_dark, green_bg_dark),
+#     light=(ord("#"), green_fg_light, green_bg_light),
+# )
+
+
+

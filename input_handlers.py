@@ -180,7 +180,14 @@ class MainGameEventHandler(EventHandler):
 
         if modifier & kb_mod.SHIFT: # if a shift is held
             if key == kb.PERIOD:
-                return TakeStairsAction(player)
+                return TakeStairsDownAction(player)
+            if key == kb.COMMA:
+                return TakeStairsUpAction(player)
+            if key == kb.s:
+                return SaveMapAction(player)
+
+
+            
 
         
         else: # No modifier keys
