@@ -25,13 +25,14 @@ import tcod.noise
 import tcod.render
 import tcod.sdl.mouse
 import tcod.sdl.render
+from tcod import libtcodpy
 
 # ruff: noqa: S311
 
 if not sys.warnoptions:
     warnings.simplefilter("default")  # Show all warnings.
 
-DATA_DIR = Path(__file__).parent / "../libtcod/data"
+DATA_DIR = Path(__file__).parent / "./data"
 """Path of the samples data directory."""
 
 assert DATA_DIR.exists(), "Data directory is missing, did you forget to run `git submodule update --init`?"
@@ -162,7 +163,7 @@ class TrueColorSample(Sample):
             fg=WHITE,
             bg=GREY,
             bg_blend=tcod.BKGND_MULTIPLY,
-            alignment=tcod.CENTER,
+            alignment=libtcodpy.CENTER,
         )
 
 

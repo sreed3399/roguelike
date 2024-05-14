@@ -1,0 +1,13 @@
+infinite.dungeon:
+    name: in
+    id: id
+    floors: 6
+    entrance: mk.1
+    exit: none
+    
+mushroom.kingdom:
+    name: mk
+    id: mk
+    floors: 1
+    entrance: none
+    exit: 

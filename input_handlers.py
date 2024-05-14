@@ -98,12 +98,15 @@ class PopupMessage(BaseEventHandler):
     def __init__(self, parent_handler: BaseEventHandler, text: str):
         self.parent = parent_handler
         self.text = text
+        print(self.text)
 
     def on_render(self, console: tcod.Console) -> None:
         """Render the parent and dim the result, then print the message on top."""
+        
+        
         self.parent.on_render(console)
-        console.tiles_rgb["fg"] //= 8
-        console.tiles_rgb["bg"] //= 8
+        console.rgb["fg"] #//= 8
+        console.rgb["bg"] #//= 8
 
         console.print(
             console.width // 2,
@@ -111,7 +114,7 @@ class PopupMessage(BaseEventHandler):
             self.text,
             fg=color.white,
             bg=color.black,
-            alignment=tcod.CENTER,
+            alignment=libtcodpy.CENTER,
         )
 
     def ev_keydown(self, event: tcod.event.KeyDown) -> Optional[BaseEventHandler]:
@@ -186,9 +189,6 @@ class MainGameEventHandler(EventHandler):
             if key == kb.s:
                 return SaveMapAction(player)
 
-
-            
-
         
         else: # No modifier keys
             
@@ -213,6 +213,8 @@ class MainGameEventHandler(EventHandler):
                 return fbtest(self.engine,2)
             elif key == kb.c:
                 return CharacterScreenEventHandler(self.engine)
+            elif key == kb.p:
+                return LevelUpEventHandler(self.engine)
             
 
         # No valid key was pressed
@@ -248,7 +250,7 @@ class HistoryViewer(EventHandler):
         self.cursor = self.log_length - 1
 
     def on_render(self, console: tcod.console.Console) -> None:
-        super().on_render(console)  # Draw the main state as the background.
+        #super().on_render(console)  # Draw the main state as the background.
 
         log_console = tcod.console.Console(console.width - 6, console.height - 6)
 
@@ -408,51 +410,89 @@ class CharacterScreenEventHandler(AskUserEventHandler):
     def on_render(self, console: tcod.Console) -> None:
         super().on_render(console)
 
-        if self.engine.player.x <= 30:
-            x = 40
-        else:
-            x = 0
+        # if self.engine.player.x <= 30:
+        #     x = 40
+        # else:
+        #     x = 0
+
+        # y = 0
+
+        # width = len(self.TITLE) + 4
+
+        # console.draw_frame(
+        #     x=x,
+        #     y=y,
+        #     width=width,
+        #     height=12,
+        #     title=self.TITLE,
+        #     clear=True,
+        #     fg=(255, 255, 255),
+        #     bg=(0, 0, 0),
+        # )
 
         y = 0
-
-        width = len(self.TITLE) + 4
+        x = 0
+        height = 50
+        width = 80
 
         console.draw_frame(
             x=x,
             y=y,
             width=width,
-            height=12,
-            title=self.TITLE,
+            height=height,
+            #title=self.TITLE,
             clear=True,
-            fg=(255, 255, 255),
+            fg=color.orange,
             bg=(0, 0, 0),
+            decoration="╔═╗║ ║╚═╝",
         )
 
         console.print(
-            x=x + 1, y=y + 1, string=f"Level: {self.engine.player.level.current_level}"
+            x=x + 2, y=y + 1, string=f"Name: {self.engine.player.name}"
+        )
+
+
+        console.print(
+            x=x + 2, y=y + 2, string=f"Level: {self.engine.player.level.current_level}"
         )
         console.print(
-            x=x + 1, y=y + 2, string=f"XP: {self.engine.player.level.current_xp}"
+            x=x + 2, y=y + 3, string=f"XP: {self.engine.player.level.current_xp} / {self.engine.player.level.experience_to_next_level}"
         )
         console.print(
-            x=x + 1,
-            y=y + 3,
-            string=f"XP for next Level: {self.engine.player.level.experience_to_next_level}",
+            x=x + 2, y=y + 4,
+            string=f".................................",
         )
 
         console.print(
-            x=x + 1, y=y + 4, string=f"Attack: {self.engine.player.fighter.power}"
+            x=x + 2, y=y + 5, string=f"Attack  : {self.engine.player.fighter.power}"
         )
         console.print(
-            x=x + 1, y=y + 5, string=f"Defense: {self.engine.player.fighter.defense}"
+            x=x + 2, y=y + 6, string=f"Defense : {self.engine.player.fighter.defense}"
         )
 
         console.print(
-            x=x + 1, y=y + 6, string=f"Speed: {self.engine.player.speed}"
+            x=x + 2, y=y + 7, string=f"Speed   : {self.engine.player.speed}"
         )
         console.print(
-            x=x + 1, y=y + 7, string=f"DV: {self.engine.player.dv}"
+            x=x + 2, y=y + 8, string=f"DV      : {self.engine.player.dv}"
         )
+        console.print(
+            x=x + 2, y=y + 10, string=f"Heart   : {self.engine.player.heart}"
+        )
+        console.print(
+            x=x + 2, y=y + 11, string=f"Power   : {self.engine.player.power}"
+        )
+
+        console.print(
+            x=x + 2, y=y + 12, string=f"Speed   : {self.engine.player.quickness}"
+        )
+        console.print(
+            x=x + 2, y=y + 13, string=f"Smarts  : {self.engine.player.smarts}"
+        )
+        console.print(
+            x=x + 2, y=y + 14, string=f"Coolness: {self.engine.player.coolness}"
+        )
+ 
  
 
 

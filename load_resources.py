@@ -47,9 +47,26 @@ def loadTiles():
 
 
 
-    
+
 def loadMusic():
-    var = mixer.init()
+    mixer.init()
     mixer.music.load(soundPath+"Mushroom Kingdom Mayhem.mp3")
     mixer.music.play(-1)
 
+
+class sounds():
+
+    mixer.init()
+    hit = mixer.Sound(soundPath+"sword-hit.wav")
+    hit.set_volume(0.25)
+        
+    miss = mixer.Sound(soundPath+"sword-miss.wav")
+    miss.set_volume(0.25)     
+
+    #def loadActionSounds():
+        #mixer.init()
+        
+
+    def playSound(snd):
+        getattr(sounds,snd).play()
+    

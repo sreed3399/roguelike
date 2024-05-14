@@ -10,8 +10,14 @@ import random
 
 koopa_chr = chr(100000)
 goomba_chr = chr(100001)
-player_chr = chr(100003)
+mario_chr = chr(100002)
 yoshi_chr = chr(100003)
+
+player_chr = mario_chr
+
+
+items = []
+
 
 
 
@@ -39,8 +45,8 @@ orc = Actor(
     level=Level(xp_given=35)
 )
 troll = Actor(
-    char="T",
-    color=(0, 127, 0),
+    char=koopa_chr,
+    #color=(0, 127, 0),
     name="Troll",
     ai_cls=HostileEnemy,
     equipment=Equipment(),
@@ -78,7 +84,10 @@ fireball_scroll = Item(
 )
 
 dagger = Item(
-    char="/", color=(0, 191, 255), name="Dagger", equippable=equippable.Dagger()
+    char="/", 
+    color=(0, 191, 255), 
+    name="Dagger",
+    equippable=equippable.Dagger()
 )
 
 sword = Item(

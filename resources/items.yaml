@@ -1,0 +1,7 @@
+- name: Item1
+  price: 10
+  quantity: 5
+  
+- name: Item2
+  price: 20
+  quantity: 3

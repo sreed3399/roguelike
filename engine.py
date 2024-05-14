@@ -6,12 +6,13 @@ from typing import TYPE_CHECKING
 
 from tcod.console import Console
 from tcod.map import compute_fov
-
+import os
 
 import exceptions
 
 from message_log import MessageLog
-import render_functions 
+import render_functions
+
 
 if TYPE_CHECKING:
     from entity import Actor
@@ -79,8 +80,18 @@ class Engine:
         render_functions.render_names_at_mouse_location(console=console, x=21, y=44, engine=self)
 
     def save_as(self, filename: str) -> None:
-        """Save this Engine instance as a compressed file."""
+        """Save this Engine instance as a compressed file. Saves current game state
+        Called by save function in main """
+        path = os.getcwd()+"/saves/"
+        
+        savefile = path + filename + ".sav"
+
+        if not os.path.exists(path):
+            os.mkdir(path)
+
         save_data = lzma.compress(pickle.dumps(self))
-        with open(filename, "wb") as f:
+        with open(savefile, "wb") as f:
             f.write(save_data)
+
+
         

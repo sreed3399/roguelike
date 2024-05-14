@@ -5,7 +5,10 @@ import random
 
 import color
 import exceptions
-from pygame import mixer
+#from pygame import mixer
+from load_resources import sounds
+import os
+
 
 #import mapreader
 
@@ -13,6 +16,8 @@ if TYPE_CHECKING:
     from engine import Engine
     from entity import Actor, Entity, Item
 
+
+#loadActionSounds()
 
 
 class Action:
@@ -131,13 +136,13 @@ class TakeStairsDownAction(Action):
         """
         Take the stairs, if any exist at the entity's location.
         """
-        print(self.engine.game_map.downstairs_location)
-        print(self.entity.x, self.entity.y)
+        #print(self.engine.game_map.downstairs_location)
+        #print(self.entity.x, self.entity.y)
 
         if (self.entity.x, self.entity.y) == self.engine.game_map.downstairs_location:
-            self.engine.game_map.save_map("levels/test.lvl")
+            SaveMapAction(self.entity)
             
-            
+            #self.engine.game_world.move_floor()
             self.engine.game_world.generate_floor()
             self.engine.message_log.add_message(
                 "You descend the staircase.", color.descend
@@ -151,12 +156,14 @@ class TakeStairsUpAction(Action):
         """
         Take the stairs, if any exist at the entity's location.
         """
-        print(self.engine.game_map.upstairs_location)
-        print(self.entity.x, self.entity.y)
+        #print(self.engine.game_map.upstairs_location)
+        #print(self.entity.x, self.entity.y)
         if (self.entity.x, self.entity.y) == self.engine.game_map.upstairs_location:
-            self.engine.game_map.save_map("levels/test.lvl")
+
             
-            
+            #self.engine.game_map.save_map()
+
+            #self.engine.game_world.move_floor()
             self.engine.game_world.generate_floor()
             self.engine.message_log.add_message(
                 "You ascend the staircase.", color.descend
@@ -166,10 +173,18 @@ class TakeStairsUpAction(Action):
             raise exceptions.Impossible("There is no way up here.")
 
 
-class SaveMapAction(Action):
+class SaveMapAction(Action): # Save action items added by steve
     def perform(self) -> None:
         
-        self.engine.game_map.save_map("levels/test.lvl")
+        
+        print(self.engine.game_map.entities)
+
+        path = "saves/"+self.name
+        if not os.path.exists(path):
+            os.mkdir(path)
+        #self.engine.game_map.save_map(path)
+        self.engine.game_map.save_map(path)
+        
 
 
 class ActionWithDirection(Action):
@@ -207,13 +222,6 @@ class BumpAction(ActionWithDirection):
 class MeleeAction(ActionWithDirection):
     def perform(self) -> None:
         
-        #mixer.init()
-        hit = mixer.Sound("sounds/sword-hit.wav")
-        hit.set_volume(0.25)
-        miss = mixer.Sound("sounds/sword-miss.wav")
-        miss.set_volume(0.25)
-        
-
         target = self.target_actor
         
         if not target:
@@ -229,7 +237,11 @@ class MeleeAction(ActionWithDirection):
 
         
         if random.randint(1,20 + self.entity.toHit) >= target.dv:         
-            hit.play()
+            
+            #time.sleep(.1)
+
+            sounds.playSound("hit")
+            #hit.play()
             if damage > 0:
                 print(f"{attack_desc} for {damage} hit points.")
                 self.engine.message_log.add_message(
@@ -245,7 +257,7 @@ class MeleeAction(ActionWithDirection):
             print(f"{attack_desc} but misses!")
             self.engine.message_log.add_message(
                 f"{attack_desc} but misses!", attack_color)
-            miss.play()
+            sounds.playSound("miss")
 
 
         self.entity.energy -= 1000

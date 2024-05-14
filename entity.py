@@ -17,6 +17,9 @@ if TYPE_CHECKING:
 
 T = TypeVar("T", bound="Entity")
 
+
+
+
 class Entity:
     """
     A generic object to represent players, enemies, items, etc.
@@ -41,12 +44,15 @@ class Entity:
         self.name = name
         self.blocks_movement = blocks_movement
         self.render_order = render_order
-        self.entityid = name
+        self.id = name
         
         if parent:
             # If parent isn't provided now then it will be set later.
             self.parent = parent
             parent.entities.add(self)
+    @property
+    def location(self):
+        return (self.x,self.y)
 
     @property
     def gamemap(self) -> GameMap:
@@ -124,11 +130,14 @@ class Actor(Entity):
         self.id = name
 
 
-        self.heart = 10
-        self.power = 10
-        self.quickness = 10
-        self.smarts = 10
-        self.coolness = 10
+        self.race = "Mario"
+        self.job = "Mario"
+
+        self.heart = 10  #Constitution
+        self.power = 10  # Strength
+        self.quickness = 10 # Dex / Agility
+        self.smarts = 10 # Intelligence
+        self.coolness = 10 # Charisma / Luck / etc
 
         self.visionRange = 8
         self.speed = 100
@@ -139,8 +148,7 @@ class Actor(Entity):
 
         self.dv = 0
         self.pv = 0
-
-                
+               
 
     @property
     def toHit(self) -> int:

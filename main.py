@@ -5,15 +5,15 @@ environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
 
 # Standard Python Libraries
 import traceback
-import time
-import imageio
+#import time
+#import imageio
 from PIL import Image
 import numpy as np
 from pygame import mixer
 
 # tcod - roguelike library
-import tcod
-import load_resources
+import tcod 
+from load_resources import loadTiles, loadMusic
 
 # Program Modules
 import color
@@ -21,7 +21,7 @@ import exceptions
 import input_handlers
 import setup_game
 
-def save_game(handler: input_handlers.BaseEventHandler, filename: str) -> None:
+def save_game(handler: input_handlers.BaseEventHandler, filename: str) -> None: 
     """If the current event handler has an active Engine then save it."""
     if isinstance(handler, input_handlers.EventHandler):
         handler.engine.save_as(filename)
@@ -32,50 +32,10 @@ def main() -> None:
     screen_width = 80
     screen_height = 50
 
-    # var = mixer.init()
-    # mixer.music.load("resources/sounds/Mushroom Kingdom Mayhem.mp3")
-    # mixer.music.play(-1)
-
-    load_resources.loadMusic()
-    tileset = load_resources.loadTiles()
-
-
-    # tileset = tcod.tileset.load_tilesheet(
-    #     #"dejavu10x10_gs_tc.png", 32, 8, tcod.tileset.CHARMAP_TCOD
-    #     "tiles/tiles-2x.png", 32, 8, tcod.tileset.CHARMAP_TCOD
-    # )
-
-    # tileset = tcod.tileset.load_truetype_font("tiles/courier-bold.ttf",16,16)
-    
-    # image = Image.open("tiles/koopa.png")
-    # tileset.set_tile(100000,np.array(image))
-
-    # image = Image.open("tiles/goomba.png")
-    # tileset.set_tile(100001,np.array(image))
-
-    # image = Image.open("tiles/mario.png")
-    # tileset.set_tile(100002,np.array(image))
-
-    # image = Image.open("tiles/yoshi.png")
-    # tileset.set_tile(100003,np.array(image))
-    
-    # image = Image.open("tiles/dung_wall.png")
-    # tileset.set_tile(100010,np.array(image))
-    
-    # image = Image.open("tiles/down_pipe.png")
-    # tileset.set_tile(100011,np.array(image))
-
-    # image = Image.open("tiles/up_pipe.png")
-    # tileset.set_tile(100012,np.array(image))
-
-    # image = Image.open("tiles/dung_floor.png")
-    # #tileset.set_tile(ord("."),np.array(image))
-
- 
-    
-
+    loadMusic()
+    tileset = loadTiles()
+  
     handler: input_handlers.BaseEventHandler = setup_game.MainMenu()
-    
     
 
     ### Main Game Loop
@@ -125,10 +85,12 @@ def main() -> None:
         except exceptions.QuitWithoutSaving:
             raise
         except SystemExit:  # Save and quit.
-            save_game(handler, "savegame.sav")
+            save_game(handler, handler.engine.player.name)
+            
+            #save_game(handler, "saves/savegame.sav")
             raise
         except BaseException:  # Save on any other unexpected exception.
-            save_game(handler, "savegame.sav")
+            save_game(handler, handler.engine.player.name)
             raise
           
 

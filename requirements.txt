@@ -5,3 +5,4 @@ pyinstaller >= 6.5.0
 pillow >= 10.3.0
 imageio >= 2.34
 pygame >= 2.5.2
+pyyaml >= 6.0.1

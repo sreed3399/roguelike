@@ -8,6 +8,7 @@ from tcod.console import Console
 from entity import Actor, Item
 import tile_types
 import pickle, lzma
+import os
 
 if TYPE_CHECKING:
     from engine import Engine
@@ -102,20 +103,46 @@ class GameMap:
                     x=entity.x, y=entity.y, string=entity.char, fg=entity.color
                 )
 
-    def save_map(self, filename: str) -> None:
-        """Save this map instance as a compressed file."""
-        #save_data = lzma.compress(pickle.dumps(self))
-        save_data = self.tiles#.copy(order='C')
-        save_data.tofile("levels/level" +  str(self.engine.game_world.current_floor) + ".lvl")
-  
+    def save_map(self, filename: str = "player") -> None:
+        """ Save this Engine instance as a compressed file. Saves current game state 
+        Called by save function in main 
+        """
         
+        path = os.getcwd()+"/saves/" + self.engine.player.name + "/"
+        savefile = (path + "/" +  str(self.engine.game_world.current_floor) + ".map")
 
-        #np.savetxt("levels/tiles.txt", save_data[[0,0],[0,1]], delimiter=";", fmt="%s",header="")
-        #with open(filename, "wb") as f:
-        #    f.write(save_data)
+        if not os.path.exists(path):
+            os.mkdir(path)
 
-        #b = np.loadtxt("levels/tiles.txt",dtype=str,delimiter=";")
-        #print("2-0,0: ",b[0,0])
+        save_data = lzma.compress(pickle.dumps(self.engine.game_map))
+        with open(savefile, "wb") as f:
+            f.write(save_data)
+        print("saved")
+
+        
+    # def save_map(self, path: str = "player") -> None: # added by Steve
+    #     """Save this map instance as a compressed file.
+    #     currently being used to load/unload maps that have been previously visited
+    #     """
+    #     path = "saves/" + self.engine.player.name
+    #     if not os.path.exists(path):
+    #         os.mkdir(path)
+        
+    #     save_data = self.tiles
+    #     save_data.tofile(path + "/" +  str(self.engine.game_world.current_floor) + ".map")
+
+    
+    def load_map(self,filename: str) -> GameMap:
+        """Load an Engine instance from a file."""
+        with open(filename, "rb") as f:
+            map = pickle.loads(lzma.decompress(f.read()))
+        assert isinstance(map, GameMap)
+
+        # for entity in map.entities:
+        #     print(entity)
+        
+        return map  
+
 
 
 
@@ -148,6 +175,7 @@ class GameWorld:
 
         self.current_floor = current_floor
 
+
     def generate_floor(self) -> None:
         from procgen import generate_dungeon
 
@@ -162,8 +190,28 @@ class GameWorld:
             engine=self.engine,
         )
 
-    def move_floor(self, floor: str) -> None:
+    def move_floor(self, tofloor: str = 2) -> None:
+        
+        self.engine.game_map.save_map()
+        
+        #print("Level:",self.engine.game_world.current_floor)
+        for entity in self.engine.game_map.entities:
+            print(entity.id,entity.location)
         # If file exists, load
-        # If not generate.
-        # if 
+        path = "saves/" + self.engine.player.name + "/2.map"
+        if os.path.exists(path):
+            print("exists")
+            self.engine.game_map = self.engine.game_map.load_map(path)
+            
+            
+            #print(self.engine.game_world.current_floor)
+            for entity in self.engine.game_map.entities:
+                #print(entity.id ,entity.location)
+                pass
+
+        else:
+            self.generate_floor()
+         
         return
+    
+

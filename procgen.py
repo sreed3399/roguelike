@@ -197,9 +197,12 @@ def generate_dungeon(
         rooms.append(new_room)
     
     instances = 0
-    for entity in set(dungeon.gamemap.actors) - {player}:
+    for entity in set(dungeon.gamemap.actors):#- {player}:
         instances += 1
-        entity.id += str(instances)
+        if entity == player:
+            print("Player!",entity.id )
+            continue
+        entity.id = str(engine.game_world.current_floor) + entity.name + str(instances)
         #print(entity.name)
     
     
