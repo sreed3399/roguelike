@@ -9,6 +9,7 @@ import os
 import fnmatch
 from typing import Optional
 
+
 import tcod
 from tcod import libtcodpy
 
@@ -26,9 +27,12 @@ import time
 
 background_image = tcod.image.load("resources/images/mario.png")[:, :, :3]
 kb = tcod.event.KeySym
+kb_mod = tcod.event.Modifier
 
-def new_game(name: str="Mario", race:str = "Mario", job: str = "Mario") -> Engine:
+#def new_game(charName: str="Mario", charRace:str = "Mario", charClass: str = "Mario") -> Engine:
+def new_game(**kwargs) -> Engine:
     """Return a brand new game session as an Engine instance."""
+
     map_width = 80
     map_height = 43
 
@@ -37,6 +41,14 @@ def new_game(name: str="Mario", race:str = "Mario", job: str = "Mario") -> Engin
     max_rooms = 30
 
     player = copy.deepcopy(entity_factories.player)
+
+    player.name = kwargs['charName']
+    player.charRace = kwargs['charRace']
+    player.charClass = kwargs['charClass']
+
+    if kwargs['charRace'] == "yoshi":
+        player.char = entity_factories.yoshi_chr
+
 
     player.speed = 200
     engine = Engine(player=player)
@@ -51,9 +63,7 @@ def new_game(name: str="Mario", race:str = "Mario", job: str = "Mario") -> Engin
     )
     
 
-    #player.char = CharacterGeneration()
-
-
+    
     engine.game_world.generate_floor()
     engine.update_fov()
 
@@ -75,7 +85,6 @@ def new_game(name: str="Mario", race:str = "Mario", job: str = "Mario") -> Engin
     player.dv = 20
 
     
-
     return engine
 
 
@@ -95,7 +104,7 @@ class LoadSavedGameMenu(input_handlers.BaseEventHandler):
         self.saves = fnmatch.filter(os.listdir(self.dir_path),"*.sav")
         self.parent = parent_handler
     
-    def on_render(self, console: tcod.Console) -> None:
+    def on_render(self, console: tcod.console.Console) -> None:
        
         
         #print(self.saves, len(self.saves))
@@ -104,7 +113,6 @@ class LoadSavedGameMenu(input_handlers.BaseEventHandler):
         x = 5
         height = 50
         width = 80
-
 
 
         console.draw_frame(
@@ -160,7 +168,7 @@ class CharGen1(input_handlers.BaseEventHandler):
     #     #self.saves = fnmatch.filter(os.listdir(self.dir_path),"*.sav")
         self.parent = parent_handler
     
-    def on_render(self, console: tcod.Console) -> None:
+    def on_render(self, console: tcod.console.Console) -> None:
        
         #print("on render")
         #print(self.saves, len(self.saves))
@@ -186,7 +194,7 @@ class CharGen1(input_handlers.BaseEventHandler):
 
         txt = "║ Choose a Character Race ║"
 
-        self.races = ["mario","yoshi"]
+        self.races = ["mario","yoshi","bowser","koopa"]
 
         centerTitle = int(width/2 - len(txt)/2)        
         console.print(centerTitle , y , txt)
@@ -221,29 +229,26 @@ class CharGen1(input_handlers.BaseEventHandler):
                 self.engine.message_log.add_message("Invalid entry.", color.invalid)
                 return None
 
-            return CharGen2(self)
-            return input_handlers.MainGameEventHandler(new_game())
+            return CharGen2(self,charRace=selected_item)
+            
         #return super().ev_keydown(event)
 
 
 class CharGen2(input_handlers.BaseEventHandler):
 
-    def __init__(self,parent_handler: MainMenu) -> None:
+    def __init__(self,parent_handler: MainMenu,**kwargs) -> None:
     #     #self.dir_path = os.getcwd()+"/saves/"
     #     #self.saves = fnmatch.filter(os.listdir(self.dir_path),"*.sav")
         self.parent = parent_handler
+        self.newGameVars = kwargs
+        print(type(self.newGameVars))
     
     def on_render(self, console: tcod.Console) -> None:
-       
-        #print("on render")
-        #print(self.saves, len(self.saves))
-
+ 
         y = 5
         x = 5
         height = 50
         width = 80
-
-
 
         console.draw_frame(
             x=x,
@@ -259,7 +264,7 @@ class CharGen2(input_handlers.BaseEventHandler):
 
         txt = "║ Choose Class for your Character ║"
 
-        self.charClasses = ["mario","yoshi"]
+        self.charClasses = ["mario","yoshi","bowser","koopa"]
 
         centerTitle = int(width/2 - len(txt)/2)        
         console.print(centerTitle , y , txt)
@@ -274,11 +279,9 @@ class CharGen2(input_handlers.BaseEventHandler):
         else:
             console.print(x + 1, y + 1, "(Empty)")
 
-    def ev_textinput(self, event: tcod.event.TextInput) -> Optional[input_handlers.ActionOrHandler]:   
-        var = event
 
     def ev_keydown(self, event: tcod.event.KeyDown):# -> Optional[input_handlers.ActionOrHandler]:
-        #player = self.engine.player
+        
         key = event.sym
         index = key - kb.a
 
@@ -289,28 +292,30 @@ class CharGen2(input_handlers.BaseEventHandler):
             try:
                                 
                 selected_item = self.charClasses[index]
+
+                self.newGameVars["charClass"] = selected_item
+                print(self.newGameVars)
+
                 #race_chr = getattr(entity_factories,selected_item+"_chr")
                 #print("gen1:",selected_item)
-                
 
             except IndexError:
                 self.engine.message_log.add_message("Invalid entry.", color.invalid)
                 return None
 
-            #time.sleep(.1)
-            return CharGen3(self)
-            #return TextInput(self)
-            #return input_handlers.MainGameEventHandler(new_game())
-        #return super().ev_keydown(event)
+            
+            return CharGen3(self, **self.newGameVars)
+            
 
 
 class CharGen3(input_handlers.BaseEventHandler):
     
-
-    buffer = "Mario"
     
-    def __init__(self,parent_handler: MainMenu) -> None:
+    def __init__(self,parent_handler: MainMenu,**kwargs) -> None:
         self.parent = parent_handler
+        self.newGameVars = kwargs
+        print(self.newGameVars)
+        self.buffer = kwargs['charRace']
 
 
     def on_render(self, console: tcod.Console) -> None:
@@ -322,6 +327,8 @@ class CharGen3(input_handlers.BaseEventHandler):
         x = 5
         height = 50
         width = 80
+
+        
 
         console.draw_frame(
             x=x,
@@ -348,9 +355,7 @@ class CharGen3(input_handlers.BaseEventHandler):
     #def ev_keydown(self, event: tcod.event) -> Optional[input_handlers.ActionOrHandler]:
         #player = self.engine.player
         key = event.sym
-        #key = event.KeyDown.sym
-
-        #txt = event.TextInput
+        modifier = event.mod
 
         if key == (kb.BACKSPACE):
             self.buffer = self.buffer[:-1]
@@ -359,90 +364,67 @@ class CharGen3(input_handlers.BaseEventHandler):
             return self.parent
         
         if key == (kb.RETURN):
-            return input_handlers.MainGameEventHandler(new_game())
+            
+            
+            self.newGameVars['charName'] = self.buffer
+            return input_handlers.MainGameEventHandler(new_game(**self.newGameVars))
         
         index = key - kb.a
-        if 0 <= index <= 26: 
-            print (tcod.event.KeySym(key))
 
-        #index = key - kb.a
-
-        
-        
-
-
-
-    def ev_textinput(self, event: tcod.event.TextInput) -> Optional[input_handlers.ActionOrHandler]:   
-        text = event.text
-        
-        self.buffer += text
-
-
-
-
-
-
-# class TextInput(input_handlers.BaseEventHandler):
-
-#     buffer = "test"
-
-#     def __init__(self,parent_handler) -> None:
-#         self.parent = parent_handler
-
-#     def on_render(self, console: tcod.Console) -> None:
-       
-#         #print("on render")
-#         #print(self.saves, len(self.saves))
-
-#         y = 5
-#         x = 5
-#         height = 50
-#         width = 80
-
-#         console.draw_frame(
-#             x=x,
-#             y=y,
-#             width=width-10,
-#             height=height-10,
-#             #title=self.TITLE,
-#             clear=True,
-#             fg=color.orange,
-#             bg=(0, 0, 0),
-#             decoration="╔═╗║ ║╚═╝",
-#         )
-
-#         txt = "║ Enter your name ║"
-#         centerTitle = int(width/2 - len(txt)/2)        
-#         console.print(centerTitle , y , txt)
-        
-#         console.print(x + 3, y + 5, self.buffer)
-
-#     #context = tcod.context.new()
-
-#     while True:
-#         console = context.new_console()
-#         context.present(console, integer_scaling=True)
-
-        
-
-#         for event in tcod.event.get():
-#             context.convert_event(event)
-#             match event:
-#                 case tcod.event.Quit():
-#                     raise SystemExit()
-#                 case tcod.event.KeyDown(sym=tcod.event.KeySym.ESCAPE):
-#                     ...  # Cancel this text field interaction
-#                 case tcod.event.KeyDown(sym=tcod.event.KeySym.RETURN):
-#                     ...  # Verify and use buffer
-#                 case tcod.event.KeyDown(sym=tcod.event.KeySym.BACKSPACE):
-#                     buffer = buffer[:-1]  # Remove last symbol
-#                 case tcod.event.TextInput(text=text):
-#                     buffer += text  # Append text input
-
+        if modifier & kb_mod.SHIFT: # if a shift is held
             
+            if 0 <= index <= 26: 
+                #print (chr(key))
+                self.buffer += str.capitalize(chr(key))
+                return
 
+        if 0 <= index <= 26: 
+            #print (chr(key))
+            self.buffer += chr(key)
+
+
+    # Handled in KeyDown to avoid issue where selection from previous menu enters a letter
+    # def ev_textinput(self, event: tcod.event.TextInput) -> Optional[input_handlers.ActionOrHandler]:   
+    #     text = event.text
+        
+    #     #self.buffer += text
+
+
+class TextInput(input_handlers.BaseEventHandler):
+
+    #buffer = "Mario"
+
+    def __init__(self) -> None:
+        self.buffer = "tests"
+
+    def on_render(self, console: tcod.console.Console) -> None:
+        
+        console.print(5,5,self.buffer)
         
 
+    def dispatch(self, event, *args, **kwargs):
+        #saved_args = locals()
+        #print(saved_args)
+
+
+        #for event in tcod.event.get():
+            
+        match event:
+            case tcod.event.Quit():
+                raise SystemExit()
+            case tcod.event.KeyDown(sym=tcod.event.KeySym.ESCAPE):
+                return self.parent
+            case tcod.event.KeyDown(sym=tcod.event.KeySym.RETURN):
+                return input_handlers.MainGameEventHandler(new_game())
+            case tcod.event.KeyDown(sym=tcod.event.KeySym.BACKSPACE):
+                print("back")
+                self.buffer = self.buffer[:-1]  # Remove last symbol
+                return
+            case tcod.event.TextInput(text=text):
+                self.buffer += text  # Append text input
+                return
+                
+    
 
 
 
@@ -450,7 +432,7 @@ class CharGen3(input_handlers.BaseEventHandler):
 class MainMenu(input_handlers.BaseEventHandler):
     """Handle the main menu rendering and input."""
 
-    
+
 
     def on_render(self, console: tcod.Console) -> None:
         """Render the main menu on a background image."""
@@ -504,8 +486,9 @@ class MainMenu(input_handlers.BaseEventHandler):
                 return input_handlers.PopupMessage(self, f"Failed to load save:\n{exc}")
         elif event.sym == kb.n:
             print("new game")
+            
             #return input_handlers.MainGameEventHandler(new_game())
-            #return CharacterGeneration(self)
+            
 
             return CharGen1(self)
             #return CharGen2(self)

@@ -32,7 +32,7 @@ from tcod import libtcodpy
 if not sys.warnoptions:
     warnings.simplefilter("default")  # Show all warnings.
 
-DATA_DIR = Path(__file__).parent / "./data"
+DATA_DIR = Path(__file__).parent / "./libtcod/data"
 """Path of the samples data directory."""
 
 assert DATA_DIR.exists(), "Data directory is missing, did you forget to run `git submodule update --init`?"

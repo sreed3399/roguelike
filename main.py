@@ -54,10 +54,9 @@ def main() -> None:
                                                 
                 handler.on_render(console=root_console)
                 context.present(root_console)
-                
-                                
+                                                
                 try:
-                    #for event in tcod.event.wait():
+                    
                     if isinstance(handler, input_handlers.MainGameEventHandler):
                         if handler.engine.player.energy >= 0:
                             handler.engine.player.energy = 0
@@ -67,7 +66,8 @@ def main() -> None:
                                 if entity.energy >= 0:
                                     entity.energy = 0
                                 
-                                #print(entity.name,entity.energy,entity.speed)
+                                
+                    #for event in tcod.event.wait(): # Wait pauses for input. #Get lets the loop process so things can still happen during turns
                     for event in tcod.event.get():
                         #print(event)        
                         context.convert_event(event)

@@ -451,6 +451,9 @@ class CharacterScreenEventHandler(AskUserEventHandler):
             x=x + 2, y=y + 1, string=f"Name: {self.engine.player.name}"
         )
 
+        console.print(
+            x=x + 20, y=y + 1, string=f"Race: {self.engine.player.charRace}  |  Class: {self.engine.player.charClass}"
+        )
 
         console.print(
             x=x + 2, y=y + 2, string=f"Level: {self.engine.player.level.current_level}"

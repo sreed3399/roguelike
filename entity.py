@@ -130,8 +130,8 @@ class Actor(Entity):
         self.id = name
 
 
-        self.race = "Mario"
-        self.job = "Mario"
+        self.charRace = "Mario"
+        self.charClass = "Mario"
 
         self.heart = 10  #Constitution
         self.power = 10  # Strength

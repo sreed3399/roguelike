@@ -200,7 +200,7 @@ def generate_dungeon(
     for entity in set(dungeon.gamemap.actors):#- {player}:
         instances += 1
         if entity == player:
-            print("Player!",entity.id )
+            print("Procgen.py 203 | Player.entity.id:",entity.id )
             continue
         entity.id = str(engine.game_world.current_floor) + entity.name + str(instances)
         #print(entity.name)

@@ -1,10 +1,12 @@
 
 from PIL import Image
 import numpy as np
-from pygame import mixer
+
 
 import color
 import tcod
+
+from pygame import mixer
 
 imagePath = "resources/images/"
 mapPath = "resources/maps/"
@@ -13,9 +15,10 @@ tilePath = "resources/tiles/"
 
 def loadTiles():
     
-    tileset = tcod.tileset.load_tilesheet(
-        tilePath+"tiles-2x.png", 32, 8, tcod.tileset.CHARMAP_TCOD
-    )
+    # Original load tileset
+    # tileset = tcod.tileset.load_tilesheet(
+    #     tilePath+"tiles-2x.png", 32, 8, tcod.tileset.CHARMAP_TCOD
+    # )
 
     tileset = tcod.tileset.load_truetype_font(tilePath+"courier-bold.ttf",16,16)
     
