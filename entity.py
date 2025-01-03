@@ -50,6 +50,7 @@ class Entity:
             # If parent isn't provided now then it will be set later.
             self.parent = parent
             parent.entities.add(self)
+    
     @property
     def location(self):
         return (self.x,self.y)

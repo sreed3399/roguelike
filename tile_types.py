@@ -41,6 +41,14 @@ def new_tile(
 # SHROUD represents unexplored, unseen tiles
 SHROUD = np.array((ord(" "), white, black), dtype=graphic_dt)
 
+
+######################
+#
+#   Create Tiles
+#
+######################
+
+
 floor = new_tile(
     walkable=True,
     transparent=True,

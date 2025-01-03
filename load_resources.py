@@ -21,6 +21,7 @@ def loadTiles():
     # )
 
     tileset = tcod.tileset.load_truetype_font(tilePath+"courier-bold.ttf",16,16)
+    #tileset = tcod.tileset.load_truetype_font(tilePath+"DejaVuSerif.ttf",16,16)
     
     image = Image.open(tilePath+"koopa.png")
     tileset.set_tile(100000,np.array(image))
@@ -43,7 +44,7 @@ def loadTiles():
     image = Image.open(tilePath+"up_pipe.png")
     tileset.set_tile(100012,np.array(image))
 
-    image = Image.open(tilePath+"dung_floor.png")
+    #image = Image.open(tilePath+"dung_floor.png")
     #tileset.set_tile(ord("."),np.array(image))
 
     return tileset
@@ -54,7 +55,7 @@ def loadTiles():
 def loadMusic():
     mixer.init()
     mixer.music.load(soundPath+"Mushroom Kingdom Mayhem.mp3")
-    mixer.music.play(-1)
+    #mixer.music.play(-1)
 
 
 class sounds():

@@ -20,6 +20,8 @@ from game_map import GameWorld
 import input_handlers
 import time
 
+import tcod.constants
+
 
 
 
@@ -35,6 +37,9 @@ def new_game(**kwargs) -> Engine:
 
     map_width = 80
     map_height = 43
+
+    #map_width = 160
+    #map_height = 80
 
     room_max_size = 10
     room_min_size = 6
@@ -237,8 +242,6 @@ class CharGen1(input_handlers.BaseEventHandler):
 class CharGen2(input_handlers.BaseEventHandler):
 
     def __init__(self,parent_handler: MainMenu,**kwargs) -> None:
-    #     #self.dir_path = os.getcwd()+"/saves/"
-    #     #self.saves = fnmatch.filter(os.listdir(self.dir_path),"*.sav")
         self.parent = parent_handler
         self.newGameVars = kwargs
         print(type(self.newGameVars))
@@ -303,19 +306,18 @@ class CharGen2(input_handlers.BaseEventHandler):
                 self.engine.message_log.add_message("Invalid entry.", color.invalid)
                 return None
 
-            
             return CharGen3(self, **self.newGameVars)
             
 
 
 class CharGen3(input_handlers.BaseEventHandler):
-    
-    
+        
     def __init__(self,parent_handler: MainMenu,**kwargs) -> None:
         self.parent = parent_handler
         self.newGameVars = kwargs
         print(self.newGameVars)
         self.buffer = kwargs['charRace']
+        self.saveExists = False
 
 
     def on_render(self, console: tcod.Console) -> None:
@@ -327,8 +329,6 @@ class CharGen3(input_handlers.BaseEventHandler):
         x = 5
         height = 50
         width = 80
-
-        
 
         console.draw_frame(
             x=x,
@@ -348,8 +348,24 @@ class CharGen3(input_handlers.BaseEventHandler):
         centerTitle = int(width/2 - len(txt)/2)        
         console.print(centerTitle , y , txt)
 
-        
         console.print(x + 3, y + 5, self.buffer)
+
+        if self.saveExists:
+            existsMSG = "This name already exists, choose another."
+            console.print(x + 3, y + 8, existsMSG,fg=color.dark_red)
+    
+    def nameExists(self,name):
+        
+        dir_path = os.getcwd()+ "\\saves\\"
+        saves = fnmatch.filter(os.listdir(dir_path),name+"*.sav")
+        exists = os.path.exists(dir_path+name+".sav")
+        
+        print(dir_path+name+"*.sav")
+        print (saves)
+        print (exists)
+
+        return exists
+
 
     def ev_keydown(self, event: tcod.event.KeyDown) -> Optional[input_handlers.ActionOrHandler]:
     #def ev_keydown(self, event: tcod.event) -> Optional[input_handlers.ActionOrHandler]:
@@ -365,7 +381,9 @@ class CharGen3(input_handlers.BaseEventHandler):
         
         if key == (kb.RETURN):
             
-            
+            if self.nameExists(self.buffer):
+                self.saveExists = True
+                return
             self.newGameVars['charName'] = self.buffer
             return input_handlers.MainGameEventHandler(new_game(**self.newGameVars))
         
@@ -381,6 +399,8 @@ class CharGen3(input_handlers.BaseEventHandler):
         if 0 <= index <= 26: 
             #print (chr(key))
             self.buffer += chr(key)
+        
+        self.saveExists = False
 
 
     # Handled in KeyDown to avoid issue where selection from previous menu enters a letter
@@ -390,40 +410,44 @@ class CharGen3(input_handlers.BaseEventHandler):
     #     #self.buffer += text
 
 
-class TextInput(input_handlers.BaseEventHandler):
 
-    #buffer = "Mario"
 
-    def __init__(self) -> None:
-        self.buffer = "tests"
+#####
+##### 
+#####
+# class TextInput(input_handlers.BaseEventHandler):
 
-    def on_render(self, console: tcod.console.Console) -> None:
+#     #buffer = "Mario"
+
+#     def __init__(self) -> None:
+#         self.buffer = "tests"
+
+#     def on_render(self, console: tcod.console.Console) -> None:
         
-        console.print(5,5,self.buffer)
+#         console.print(5,5,self.buffer)
         
 
-    def dispatch(self, event, *args, **kwargs):
-        #saved_args = locals()
-        #print(saved_args)
+#     def dispatch(self, event, *args, **kwargs):
+#         #saved_args = locals()
+#         #print(saved_args)
 
 
-        #for event in tcod.event.get():
+#         #for event in tcod.event.get():
             
-        match event:
-            case tcod.event.Quit():
-                raise SystemExit()
-            case tcod.event.KeyDown(sym=tcod.event.KeySym.ESCAPE):
-                return self.parent
-            case tcod.event.KeyDown(sym=tcod.event.KeySym.RETURN):
-                return input_handlers.MainGameEventHandler(new_game())
-            case tcod.event.KeyDown(sym=tcod.event.KeySym.BACKSPACE):
-                print("back")
-                self.buffer = self.buffer[:-1]  # Remove last symbol
-                return
-            case tcod.event.TextInput(text=text):
-                self.buffer += text  # Append text input
-                return
-                
+#         match event:
+#             case tcod.event.Quit():
+#                 raise SystemExit()
+#             case tcod.event.KeyDown(sym=tcod.event.KeySym.ESCAPE):
+#                 return self.parent
+#             case tcod.event.KeyDown(sym=tcod.event.KeySym.RETURN):
+#                 return input_handlers.MainGameEventHandler(new_game())
+#             case tcod.event.KeyDown(sym=tcod.event.KeySym.BACKSPACE):
+#                 print("back")
+#                 self.buffer = self.buffer[:-1]  # Remove last symbol
+#                 return
+#             case tcod.event.TextInput(text=text):
+#                 self.buffer += text  # Append text input
+#                 return       
     
 
 
@@ -432,13 +456,10 @@ class TextInput(input_handlers.BaseEventHandler):
 class MainMenu(input_handlers.BaseEventHandler):
     """Handle the main menu rendering and input."""
 
-
-
-    def on_render(self, console: tcod.Console) -> None:
+    def on_render(self, console: tcod.console.Console) -> None:
         """Render the main menu on a background image."""
         console.draw_semigraphics(background_image, 0, 0)
         #console.draw_semigraphics(test_image, 0, 0)
-
         
         console.print(
             console.width // 2,
@@ -470,6 +491,22 @@ class MainMenu(input_handlers.BaseEventHandler):
                 bg_blend=libtcodpy.BKGND_ALPHA(64),
             )
 
+        # Alpha(0) makes background transparent
+        #console.print(0,20,"test", color.white,color.black, bg_blend=libtcodpy.BKGND_ALPHA(0))
+        
+
+        # Secondary Console = working space to later Blit (copy) to original canvas.
+        # secondary = tcod.console.Console(20,2,"F",)
+        # secondary.print(x=0, y=0, string="secondary", fg=(255, 255, 255), bg=(100, 100, 100))
+
+
+        # Blit the secondary console onto the primary console.
+        # Alphas between 0-1, 0 being tranparent and 1 being opaque. 
+        #secondary.blit(dest=console, dest_x=0, dest_y=0, src_x=0, src_y=0, width=20, height=2, 
+        #            fg_alpha=1.0, bg_alpha=0,)
+   
+        
+
     def ev_keydown(
         self, event: tcod.event.KeyDown
     ) -> Optional[input_handlers.BaseEventHandler]:
@@ -478,7 +515,6 @@ class MainMenu(input_handlers.BaseEventHandler):
         elif event.sym == kb.c:
             try:
                 return LoadSavedGameMenu(self)
-                                
             except FileNotFoundError:
                 return input_handlers.PopupMessage(self, "No saved game to load.")
             except Exception as exc:
@@ -486,16 +522,7 @@ class MainMenu(input_handlers.BaseEventHandler):
                 return input_handlers.PopupMessage(self, f"Failed to load save:\n{exc}")
         elif event.sym == kb.n:
             print("new game")
-            
-            #return input_handlers.MainGameEventHandler(new_game())
-            
-
             return CharGen1(self)
-            #return CharGen2(self)
-            
-            #print(name,race)
-
-            #input_handlers.MainGameEventHandler(new_game())
         return None
 
 

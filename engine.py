@@ -51,8 +51,15 @@ class Engine:
 
 
     def render(self, console: Console) -> None:
+        print("Map Height: ", self.game_map.height)
+        print("Map Width: " , self.game_map.width)
+        print("visible Shape: " , self.game_map.visible.shape)
+
+
         self.game_map.render(console)
         
+
+
 
         self.message_log.render(console=console, x=21, y=45, width=40, height=5)
 
@@ -94,4 +101,3 @@ class Engine:
             f.write(save_data)
 
 
-        
